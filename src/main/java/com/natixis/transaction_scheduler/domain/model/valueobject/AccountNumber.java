@@ -7,10 +7,10 @@ import lombok.Value;
  * Supports IBAN format (up to 34 characters for European banks).
  * <a href="https://www.bportugal.pt/sites/default/files/anexos/documentos-relacionados/international_bank_account_number_en.pdf">...</a>
  * <p>
- * Example IBANs:
- * - France: FR76 3000 6000 0112 3456 7890 189 (27 chars)
- * - Portugal: PT50 0002 0123 1234 5678 9015 4 (25 chars)
- * - Germany: DE89 3704 0044 0532 0130 00 (22 chars)
+ * Example IBANs:<br />
+ * - France: FR76 3000 6000 0112 3456 7890 189 (27 chars)<br />
+ * - Portugal: PT50 0002 0123 1234 5678 9015 4 (25 chars)<br />
+ * - Germany: DE89 3704 0044 0532 0130 00 (22 chars)<br />
  */
 @Value
 public class AccountNumber {

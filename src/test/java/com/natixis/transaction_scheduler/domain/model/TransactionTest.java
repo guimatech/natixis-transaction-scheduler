@@ -17,9 +17,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("Transaction Domain Model Tests")
 class TransactionTest {
 
-    public static final String ACCOUNT_ID_FRANCE = "FR7630006000011234567890189";
-    public static final String ACCOUNT_ID_PORTUGAL = "PT50000201231234567890154";
-    public static final String ACCOUNT_ID_GERMANY = "DE89370400440532013000";
+    private static final String ACCOUNT_ID_FRANCE = "FR7630006000011234567890189";
+    private static final String ACCOUNT_ID_PORTUGAL = "PT50000201231234567890154";
+    private static final String ACCOUNT_ID_GERMANY = "DE89370400440532013000";
 
     @Test
     @DisplayName("Should create transaction with valid parameters")

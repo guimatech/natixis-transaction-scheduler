@@ -33,6 +33,9 @@ import static org.mockito.Mockito.when;
 @DisplayName("CreateTransactionUseCase Tests")
 class CreateTransactionUseCaseImplTest {
 
+    private static final String ACCOUNT_ID_PORTUGAL = "PT50 0002 0123 1234 5678 9015 4";
+    private static final String ACCOUNT_ID_GERMANY = "DE89 3704 0044 0532 0130 00";
+
     @Mock
     private TransactionRepository transactionRepository;
 
@@ -51,8 +54,8 @@ class CreateTransactionUseCaseImplTest {
 
     @BeforeEach
     void setUp() {
-        sourceAccount = "PT50 0002 0123 1234 5678 9015 4";
-        destinationAccount = "DE89 3704 0044 0532 0130 00";
+        sourceAccount = ACCOUNT_ID_PORTUGAL;
+        destinationAccount = ACCOUNT_ID_GERMANY;
         transferAmount = BigDecimal.valueOf(1500.00);
         scheduledDate = LocalDate.now().plusDays(5);
         calculatedFee = BigDecimal.valueOf(135.00);
