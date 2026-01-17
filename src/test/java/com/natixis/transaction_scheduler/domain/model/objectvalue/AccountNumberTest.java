@@ -105,6 +105,6 @@ class AccountNumberTest {
         AccountNumber account2 = new AccountNumber("de89 3704 0044 0532 0130 00");
 
         // Then
-        assertThat(account1.hashCode()).isEqualTo(account2.hashCode());
+        assertThat(account1).hasSameHashCodeAs(account2);
     }
 }
