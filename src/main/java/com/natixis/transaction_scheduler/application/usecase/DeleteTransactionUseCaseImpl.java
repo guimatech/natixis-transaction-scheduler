@@ -6,10 +6,7 @@ import com.natixis.transaction_scheduler.domain.port.in.DeleteTransactionUseCase
 import com.natixis.transaction_scheduler.domain.port.out.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @RequiredArgsConstructor
 @Slf4j
 public class DeleteTransactionUseCaseImpl implements DeleteTransactionUseCase {
@@ -17,7 +14,6 @@ public class DeleteTransactionUseCaseImpl implements DeleteTransactionUseCase {
     private final TransactionRepository transactionRepository;
 
     @Override
-    @Transactional
     public void execute(Long id) {
         log.info("Deleting transaction with ID: {}", id);
 

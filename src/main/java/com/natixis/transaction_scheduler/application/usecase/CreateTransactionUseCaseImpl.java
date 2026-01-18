@@ -10,8 +10,6 @@ import com.natixis.transaction_scheduler.domain.port.out.FeeConfigurationReposit
 import com.natixis.transaction_scheduler.domain.port.out.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -19,7 +17,6 @@ import java.time.temporal.ChronoUnit;
 /**
  * Use Case implementation for creating transactions.
  */
-@Service
 @RequiredArgsConstructor
 @Slf4j
 public class CreateTransactionUseCaseImpl implements CreateTransactionUseCase {
@@ -28,7 +25,7 @@ public class CreateTransactionUseCaseImpl implements CreateTransactionUseCase {
     private final FeeConfigurationRepository feeConfigurationRepository;
 
     @Override
-    @Transactional
+
     public Transaction execute(CreateTransactionCommand command) {
         log.info("Creating transaction: {} -> {}",
                 command.sourceAccount(), command.destinationAccount());

@@ -10,8 +10,6 @@ import com.natixis.transaction_scheduler.domain.port.out.FeeConfigurationReposit
 import com.natixis.transaction_scheduler.domain.port.out.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -20,7 +18,6 @@ import java.time.temporal.ChronoUnit;
  * Use Case implementation for updating transactions.
  * Supports both full (PUT) and partial (PATCH) updates.
  */
-@Service
 @RequiredArgsConstructor
 @Slf4j
 public class UpdateTransactionUseCaseImpl implements UpdateTransactionUseCase {
@@ -29,7 +26,6 @@ public class UpdateTransactionUseCaseImpl implements UpdateTransactionUseCase {
     private final FeeConfigurationRepository feeConfigurationRepository;
 
     @Override
-    @Transactional
     public Transaction execute(UpdateTransactionCommand command) {
 
         log.info("Updating transaction ID: {} (partial: {})",

@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,6 +68,7 @@ public class TransactionController {
             )
     })
     @PostMapping
+    @Transactional
     public ResponseEntity<TransactionResponse> createTransaction(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Transaction details to create",
@@ -102,6 +104,7 @@ public class TransactionController {
             )
     })
     @GetMapping("/{id}")
+    @Transactional(readOnly = true)
     public ResponseEntity<TransactionResponse> getTransactionById(@PathVariable Long id) {
         log.info("REST: Getting transaction with ID: {}", id);
 
@@ -123,6 +126,7 @@ public class TransactionController {
             )
     })
     @GetMapping
+    @Transactional(readOnly = true)
     public ResponseEntity<List<TransactionResponse>> getAllTransactions() {
         log.info("REST: Getting all transactions");
 
@@ -146,6 +150,7 @@ public class TransactionController {
             )
     })
     @GetMapping("/scheduled/{date}")
+    @Transactional(readOnly = true)
     public ResponseEntity<List<TransactionResponse>> getTransactionByScheduledDate(@PathVariable LocalDate date) {
         log.info("REST: Getting transactions by scheduled date: " + date);
 
@@ -169,6 +174,7 @@ public class TransactionController {
             )
     })
     @GetMapping("/accounts/{accountNumber}")
+    @Transactional(readOnly = true)
     public ResponseEntity<List<TransactionResponse>> getTransactionBySourceAccount(@PathVariable String accountNumber) {
         log.info("REST: Getting transactions by account number: " + accountNumber);
 
@@ -202,6 +208,7 @@ public class TransactionController {
             )
     })
     @PutMapping("/{id}")
+    @Transactional
     public ResponseEntity<TransactionResponse> updateTransaction(
             @PathVariable Long id,
             @Valid @RequestBody TransactionRequest request) {
@@ -239,6 +246,7 @@ public class TransactionController {
             )
     })
     @PatchMapping("/{id}")
+    @Transactional
     public ResponseEntity<TransactionResponse> patchTransaction(
             @PathVariable Long id,
             @Valid @RequestBody TransactionPatchRequest request) {
@@ -270,6 +278,7 @@ public class TransactionController {
             )
     })
     @DeleteMapping("/{id}")
+    @Transactional
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         log.info("REST: Deleting transaction with ID: {}", id);
         deleteTransactionUseCase.execute(id);
