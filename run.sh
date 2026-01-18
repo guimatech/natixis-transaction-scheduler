@@ -23,7 +23,7 @@ sleep 10
 
 echo ">>> Opening Swagger UI at: ${SWAGGER_URL}"
 
-# Try to open browser in a cross-platform way.[web:76]
+# Try to open browser in a cross-platform way.
 if command -v xdg-open > /dev/null; then
   xdg-open "${SWAGGER_URL}" >/dev/null 2>&1 &
 elif command -v open > /dev/null; then
