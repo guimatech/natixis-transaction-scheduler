@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -124,6 +125,52 @@ public class TransactionController {
         log.info("REST: Getting all transactions");
 
         List<Transaction> transactions = getTransactionUseCase.getAll();
+        List<TransactionResponse> responses = transactions.stream()
+                .map(TransactionDtoMapper.INSTANCE::toResponse)
+                .toList();
+
+        return ResponseEntity.ok(responses);
+    }
+
+    @Operation(
+            summary = "Get transactions by scheduled date",
+            description = "Retrieves a list of transactions by scheduled date in the system"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "List of transactions retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = TransactionResponse.class))
+            )
+    })
+    @GetMapping("/scheduled/{date}")
+    public ResponseEntity<List<TransactionResponse>> getTransactionByScheduledDate(@PathVariable LocalDate date) {
+        log.info("REST: Getting transactions by scheduled date: " + date);
+
+        List<Transaction> transactions = getTransactionUseCase.getByScheduledDate(date);
+        List<TransactionResponse> responses = transactions.stream()
+                .map(TransactionDtoMapper.INSTANCE::toResponse)
+                .toList();
+
+        return ResponseEntity.ok(responses);
+    }
+
+    @Operation(
+            summary = "Get transactions by account number",
+            description = "Retrieves a list of transactions by account number in the system"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "List of transactions retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = TransactionResponse.class))
+            )
+    })
+    @GetMapping("/accounts/{accountNumber}")
+    public ResponseEntity<List<TransactionResponse>> getTransactionBySourceAccount(@PathVariable String accountNumber) {
+        log.info("REST: Getting transactions by account number: " + accountNumber);
+
+        List<Transaction> transactions = getTransactionUseCase.getBySourceAccount(accountNumber);
         List<TransactionResponse> responses = transactions.stream()
                 .map(TransactionDtoMapper.INSTANCE::toResponse)
                 .toList();
