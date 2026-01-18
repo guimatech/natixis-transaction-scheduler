@@ -18,6 +18,7 @@ import java.time.temporal.ChronoUnit;
 
 /**
  * Use Case implementation for updating transactions.
+ * Supports both full (PUT) and partial (PATCH) updates.
  */
 @Service
 @RequiredArgsConstructor
@@ -31,12 +32,9 @@ public class UpdateTransactionUseCaseImpl implements UpdateTransactionUseCase {
     @Transactional
     public Transaction execute(UpdateTransactionCommand command) {
 
-        log.info("Updating transaction ID: {}", command.transactionId());
-
-        AccountNumber sourceAccount = new AccountNumber(command.sourceAccount());
-        AccountNumber destinationAccount = new AccountNumber(command.destinationAccount());
-        Money transferAmount = new Money(command.transferAmount());
-        LocalDate scheduledDate = command.scheduledDate();
+        log.info("Updating transaction ID: {} (partial: {})",
+                command.transactionId(),
+                !command.hasAnyUpdate() ? "none" : "yes");
 
         Transaction existingTransaction = transactionRepository.findById(command.transactionId())
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -45,14 +43,34 @@ public class UpdateTransactionUseCaseImpl implements UpdateTransactionUseCase {
 
         log.debug("Existing transaction: {}", existingTransaction.getSummary());
 
+        AccountNumber sourceAccount = command.sourceAccount()
+                .map(AccountNumber::new)
+                .orElse(existingTransaction.getSourceAccount());
+
+        AccountNumber destinationAccount = command.destinationAccount()
+                .map(AccountNumber::new)
+                .orElse(existingTransaction.getDestinationAccount());
+
+        Money transferAmount = command.transferAmount()
+                .map(Money::new)
+                .orElse(existingTransaction.getTransferAmount());
+
+        LocalDate scheduledDate = command.scheduledDate()
+                .orElse(existingTransaction.getScheduledDate());
+
+        // Check if fee recalculation is needed
         boolean needsRecalculation =
-                !existingTransaction.getTransferAmount().equals(transferAmount) ||
-                        !existingTransaction.getScheduledDate().equals(scheduledDate);
+                (command.transferAmount().isPresent() &&
+                        !existingTransaction.getTransferAmount().equals(transferAmount)) ||
+                        (command.scheduledDate().isPresent() &&
+                                !existingTransaction.getScheduledDate().equals(scheduledDate));
 
         Money newFee;
         FeeConfiguration newFeeConfiguration;
 
         if (needsRecalculation) {
+            log.info("Amount or date changed. Recalculating fee...");
+
             long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), scheduledDate);
             newFeeConfiguration = feeConfigurationRepository
                     .findBestMatch(transferAmount, daysBetween)
@@ -60,8 +78,6 @@ public class UpdateTransactionUseCaseImpl implements UpdateTransactionUseCase {
                             String.format("No fee configuration found for amount %s and %d days",
                                     transferAmount, daysBetween)
                     ));
-
-            log.info("Amount or date changed. Recalculating fee...");
 
             newFee = newFeeConfiguration.calculateFee(transferAmount);
 

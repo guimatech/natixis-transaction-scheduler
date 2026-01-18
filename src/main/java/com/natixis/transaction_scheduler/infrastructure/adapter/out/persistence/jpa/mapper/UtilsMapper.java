@@ -5,6 +5,7 @@ import com.natixis.transaction_scheduler.domain.model.valueobject.Money;
 import org.mapstruct.Named;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public interface UtilsMapper {
     @Named("toMoney")
@@ -23,5 +24,10 @@ public interface UtilsMapper {
         }
 
         return new AccountNumber(accountNumber);
+    }
+
+    @Named("wrapAsOptional")
+    default <T> Optional<T> wrapAsOptional(T data) {
+        return Optional.ofNullable(data);
     }
 }

@@ -1,6 +1,6 @@
 package com.natixis.transaction_scheduler.application.usecase;
 
-import com.natixis.transaction_scheduler.domain.exception.TransactionNotFoundException;
+import com.natixis.transaction_scheduler.domain.exception.ResourceNotFoundException;
 import com.natixis.transaction_scheduler.domain.model.FeeConfiguration;
 import com.natixis.transaction_scheduler.domain.model.Transaction;
 import com.natixis.transaction_scheduler.domain.model.valueobject.AccountNumber;
@@ -97,10 +97,10 @@ class UpdateTransactionUseCaseImplTest {
         Transaction result = updateTransactionUseCase.execute(
                 new UpdateTransactionUseCase.UpdateTransactionCommand(
                         1L,
-                        ACCOUNT_ID_FRANCE,
-                        ACCOUNT_ID_PORTUGAL,
-                        newAmount,
-                        newDate
+                        Optional.of(ACCOUNT_ID_FRANCE),
+                        Optional.of(ACCOUNT_ID_PORTUGAL),
+                        Optional.of(newAmount),
+                        Optional.of(newDate)
         ));
 
         // Then
@@ -125,10 +125,10 @@ class UpdateTransactionUseCaseImplTest {
         Transaction result = updateTransactionUseCase.execute(
                 new UpdateTransactionUseCase.UpdateTransactionCommand(
                         1L,
-                        ACCOUNT_ID_GERMANY, // Changed
-                        ACCOUNT_ID_AUSTRIA, // Changed
-                        existingTransaction.getTransferAmount().getAmount(), // Same
-                        existingTransaction.getScheduledDate() // Same
+                        Optional.of(ACCOUNT_ID_GERMANY), // Changed
+                        Optional.of(ACCOUNT_ID_AUSTRIA), // Changed
+                        Optional.of(existingTransaction.getTransferAmount().getAmount()), // Same
+                        Optional.of(existingTransaction.getScheduledDate()) // Same
         ));
 
         // Then
@@ -151,12 +151,12 @@ class UpdateTransactionUseCaseImplTest {
         assertThatThrownBy(() -> updateTransactionUseCase.execute(
                         new UpdateTransactionUseCase.UpdateTransactionCommand(
                                 999L,
-                                ACCOUNT_ID_FRANCE,
-                                ACCOUNT_ID_PORTUGAL,
-                                BigDecimal.valueOf(500.00),
-                                LocalDate.now()
+                                Optional.of(ACCOUNT_ID_FRANCE),
+                                Optional.of(ACCOUNT_ID_PORTUGAL),
+                                Optional.of(BigDecimal.valueOf(500.00)),
+                                Optional.of(LocalDate.now())
         )))
-                .isInstanceOf(TransactionNotFoundException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Transaction not found with ID: 999");
 
         verify(transactionRepository, never()).save(any());
@@ -180,10 +180,10 @@ class UpdateTransactionUseCaseImplTest {
         Transaction result = updateTransactionUseCase.execute(
                 new UpdateTransactionUseCase.UpdateTransactionCommand(
                         1L,
-                        existingTransaction.getSourceAccount().getValue(),
-                        existingTransaction.getDestinationAccount().getValue(),
-                        newAmount, // Changed
-                        existingTransaction.getScheduledDate() // Same
+                        Optional.of(existingTransaction.getSourceAccount().getValue()),
+                        Optional.of(existingTransaction.getDestinationAccount().getValue()),
+                        Optional.of(newAmount), // Changed
+                        Optional.of(existingTransaction.getScheduledDate()) // Same
         ));
 
         // Then
@@ -209,10 +209,10 @@ class UpdateTransactionUseCaseImplTest {
         Transaction result = updateTransactionUseCase.execute(
                 new UpdateTransactionUseCase.UpdateTransactionCommand(
                         1L,
-                        existingTransaction.getSourceAccount().getValue(),
-                        existingTransaction.getDestinationAccount().getValue(),
-                        existingTransaction.getTransferAmount().getAmount(), // Same
-                        newDate // Changed
+                        Optional.of(existingTransaction.getSourceAccount().getValue()),
+                        Optional.of(existingTransaction.getDestinationAccount().getValue()),
+                        Optional.of(existingTransaction.getTransferAmount().getAmount()), // Same
+                        Optional.of(newDate) // Changed
         ));
 
         // Then

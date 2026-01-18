@@ -1,6 +1,6 @@
 package com.natixis.transaction_scheduler.application.usecase;
 
-import com.natixis.transaction_scheduler.domain.exception.FeeConfigurationNotFoundException;
+import com.natixis.transaction_scheduler.domain.exception.ResourceNotFoundException;
 import com.natixis.transaction_scheduler.domain.model.FeeConfiguration;
 import com.natixis.transaction_scheduler.domain.model.Transaction;
 import com.natixis.transaction_scheduler.domain.model.valueobject.Money;
@@ -134,7 +134,7 @@ class CreateTransactionUseCaseImplTest {
                         transferAmount,
                         scheduledDate
                     )))
-                .isInstanceOf(FeeConfigurationNotFoundException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("No fee configuration found");
 
         verify(transactionRepository, never()).save(any());

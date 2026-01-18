@@ -5,6 +5,7 @@ import com.natixis.transaction_scheduler.domain.port.in.CreateTransactionUseCase
 import com.natixis.transaction_scheduler.domain.port.in.DeleteTransactionUseCase;
 import com.natixis.transaction_scheduler.domain.port.in.GetTransactionUseCase;
 import com.natixis.transaction_scheduler.domain.port.in.UpdateTransactionUseCase;
+import com.natixis.transaction_scheduler.infrastructure.adapter.in.rest.dto.request.TransactionPatchRequest;
 import com.natixis.transaction_scheduler.infrastructure.adapter.in.rest.dto.request.TransactionRequest;
 import com.natixis.transaction_scheduler.infrastructure.adapter.in.rest.dto.response.TransactionResponse;
 import com.natixis.transaction_scheduler.infrastructure.adapter.in.rest.mapper.TransactionDtoMapper;
@@ -22,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -203,6 +205,43 @@ public class TransactionController {
     public ResponseEntity<TransactionResponse> updateTransaction(
             @PathVariable Long id,
             @Valid @RequestBody TransactionRequest request) {
+
+        log.info("REST: Updating transaction with ID: {}", id);
+
+        UpdateTransactionUseCase.UpdateTransactionCommand command =
+                TransactionDtoMapper.INSTANCE.toUpdateCommand(id, request);
+
+        Transaction transaction = updateTransactionUseCase.execute(command);
+        TransactionResponse response = TransactionDtoMapper.INSTANCE.toResponse(transaction);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Update partially an existing transaction",
+            description = "Updates partially a transaction and recalculates the fee based on new values"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Transaction updated successfully",
+                    content = @Content(schema = @Schema(implementation = TransactionResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Transaction not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid request parameters",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @PatchMapping("/{id}")
+    public ResponseEntity<TransactionResponse> patchTransaction(
+            @PathVariable Long id,
+            @Valid @RequestBody TransactionPatchRequest request) {
 
         log.info("REST: Updating transaction with ID: {}", id);
 

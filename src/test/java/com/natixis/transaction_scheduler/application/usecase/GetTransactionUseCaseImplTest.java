@@ -1,6 +1,6 @@
 package com.natixis.transaction_scheduler.application.usecase;
 
-import com.natixis.transaction_scheduler.domain.exception.TransactionNotFoundException;
+import com.natixis.transaction_scheduler.domain.exception.ResourceNotFoundException;
 import com.natixis.transaction_scheduler.domain.model.Transaction;
 import com.natixis.transaction_scheduler.domain.model.valueobject.AccountNumber;
 import com.natixis.transaction_scheduler.domain.model.valueobject.Money;
@@ -87,7 +87,7 @@ class GetTransactionUseCaseImplTest {
 
         // When & Then
         assertThatThrownBy(() -> getTransactionUseCase.getById(999L))
-                .isInstanceOf(TransactionNotFoundException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Transaction not found with ID: 999");
 
         verify(transactionRepository).findById(999L);
