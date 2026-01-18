@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handle validation errors.
+     * Handle validation errors (@Valid / Bean Validation).
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(
@@ -60,7 +60,32 @@ public class GlobalExceptionHandler {
                 "Validation Failed",
                 "Invalid request parameters",
                 request.getDescription(false).replace("uri=", ""),
-                errors);
+                errors
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handle IllegalArgumentException (e.g., invalid IBAN, business preconditions).
+     * Maps to 400 Bad Request when the problem is with the client input.[web:46][web:55]
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
+            IllegalArgumentException ex, WebRequest request) {
+        log.warn("Illegal argument: {}", ex.getMessage());
+
+        List<String> details = new ArrayList<>();
+        details.add(ex.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Bad Request",
+                ex.getMessage(),
+                request.getDescription(false).replace("uri=", ""),
+                details
+        );
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
