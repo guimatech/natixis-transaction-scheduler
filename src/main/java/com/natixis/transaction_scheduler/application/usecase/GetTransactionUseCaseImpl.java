@@ -1,6 +1,6 @@
 package com.natixis.transaction_scheduler.application.usecase;
 
-import com.natixis.transaction_scheduler.domain.exception.TransactionNotFoundException;
+import com.natixis.transaction_scheduler.domain.exception.ResourceNotFoundException;
 import com.natixis.transaction_scheduler.domain.model.Transaction;
 import com.natixis.transaction_scheduler.domain.port.in.GetTransactionUseCase;
 import com.natixis.transaction_scheduler.domain.port.out.TransactionRepository;
@@ -28,7 +28,7 @@ public class GetTransactionUseCaseImpl implements GetTransactionUseCase {
         log.debug("Fetching transaction by ID: {}", id);
 
         return transactionRepository.findById(id)
-                .orElseThrow(() -> new TransactionNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Transaction not found with ID: %d", id)
                 ));
     }

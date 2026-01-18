@@ -1,7 +1,6 @@
 package com.natixis.transaction_scheduler.application.usecase;
 
-import com.natixis.transaction_scheduler.domain.exception.FeeConfigurationNotFoundException;
-import com.natixis.transaction_scheduler.domain.exception.TransactionNotFoundException;
+import com.natixis.transaction_scheduler.domain.exception.ResourceNotFoundException;
 import com.natixis.transaction_scheduler.domain.model.FeeConfiguration;
 import com.natixis.transaction_scheduler.domain.model.Transaction;
 import com.natixis.transaction_scheduler.domain.model.valueobject.AccountNumber;
@@ -40,7 +39,7 @@ public class UpdateTransactionUseCaseImpl implements UpdateTransactionUseCase {
         LocalDate scheduledDate = command.scheduledDate();
 
         Transaction existingTransaction = transactionRepository.findById(command.transactionId())
-                .orElseThrow(() -> new TransactionNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Transaction not found with ID: %d", command.transactionId())
                 ));
 
@@ -57,7 +56,7 @@ public class UpdateTransactionUseCaseImpl implements UpdateTransactionUseCase {
             long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), scheduledDate);
             newFeeConfiguration = feeConfigurationRepository
                     .findBestMatch(transferAmount, daysBetween)
-                    .orElseThrow(() -> new FeeConfigurationNotFoundException(
+                    .orElseThrow(() -> new ResourceNotFoundException(
                             String.format("No fee configuration found for amount %s and %d days",
                                     transferAmount, daysBetween)
                     ));

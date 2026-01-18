@@ -165,11 +165,4 @@ public class Transaction {
     public boolean hasFeeConfiguration() {
         return feeConfiguration != null;
     }
-
-    /**
-     * Get fee type applied (if available).
-     */
-    public String getAppliedFeeType() {
-        return feeConfiguration != null ? feeConfiguration.getFeeType() : "UNKNOWN";
-    }
 }

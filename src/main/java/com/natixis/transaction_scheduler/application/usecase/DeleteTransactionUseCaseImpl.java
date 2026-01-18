@@ -1,6 +1,6 @@
 package com.natixis.transaction_scheduler.application.usecase;
 
-import com.natixis.transaction_scheduler.domain.exception.TransactionNotFoundException;
+import com.natixis.transaction_scheduler.domain.exception.ResourceNotFoundException;
 import com.natixis.transaction_scheduler.domain.model.Transaction;
 import com.natixis.transaction_scheduler.domain.port.in.DeleteTransactionUseCase;
 import com.natixis.transaction_scheduler.domain.port.out.TransactionRepository;
@@ -22,7 +22,7 @@ public class DeleteTransactionUseCaseImpl implements DeleteTransactionUseCase {
         log.info("Deleting transaction with ID: {}", id);
 
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new TransactionNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Cannot delete. Transaction not found with ID: %d", id)
                 ));
 
